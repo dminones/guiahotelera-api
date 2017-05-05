@@ -1,6 +1,15 @@
 _ = require('underscore');
 var environment = process.env.ENVIRONMENT_NAME || 'dev';
-var envSettings = require('./settings-'+ environment);
+var envSettings;
+try {
+    // the synchronous code that we want to catch thrown errors on
+    envSettings = require('./settings-'+ environment);
+} catch (err) {
+    // handle the error safely
+    envSettings = {};
+    console.log(err);
+}
+
 var settings = {
 	  port : process.env.PORT || 3000,
 	  mongodb : {
