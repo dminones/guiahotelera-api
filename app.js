@@ -1,7 +1,12 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/myproject');
+var settings = require('./config/settings');
+
+var authMongooseString = 	(settings.mongodb.username && settings.mongodb.password) ? 
+							settings.mongodb.username+':'+settings.mongodb.password+'@' : 
+							'';
+mongoose.connect('mongodb://'+authMongooseString+settings.mongodb.url+':'+settings.mongodb.name+'/'+settings.mongodb.name);
 var Hotel = require('./models/hotel');
 // Setup the Forest Liana middleware in your app.js file
 app.use(require('forest-express-mongoose').init({
@@ -11,4 +16,4 @@ app.use(require('forest-express-mongoose').init({
   mongoose: mongoose // The mongoose database connection.
 }));
 
-app.listen(3000)
+app.listen(settings.port)
