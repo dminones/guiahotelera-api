@@ -4,6 +4,7 @@ var fs       = require("fs");
 var path     = require("path");
 var mongoose = require('mongoose');
 var settings = require('../config/settings');
+var reload = require('require-reload')(require)
 
 var authMongooseString =  (settings.mongodb.username && settings.mongodb.password) ? 
               settings.mongodb.username+':'+settings.mongodb.password+'@' : 
@@ -20,7 +21,7 @@ fs
     return (file.indexOf(".") !== 0) && (file !== "index.js");
   })
   .forEach(function(file) {
-    var model = require(path.join(__dirname, file));
+    var model = reload(path.join(__dirname, file));
     db[model.modelName] = model;
   });
 

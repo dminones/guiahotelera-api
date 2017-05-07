@@ -11,6 +11,8 @@ app.use(require('forest-express-mongoose').init({
   mongoose: models.mongoose // The mongoose database connection.
 }));
 
+app.set('view engine', 'ejs');  
+
 app.get('/', function(req, res) {
 	res.json({ message: 'Hello World!!' });
 });
@@ -27,13 +29,25 @@ app.get('/hotel/:name', function(req, res) {
 });
 
 app.get('/hotels/',function(req, res){
-	models.Hotel.find({}).exec(function(error, results){
+  var response;
+	models.Hotel.find({}).populate('_destination').exec(function(error, results){
 		if (error) {
-		  	res.json({ error: error });
+		  	response = { error: error };
 		  } else {
-		  	res.json(results);
+		  	response = results;
 		  }
+    res.render('pages/index', response);
 	});
+});
+
+app.get('/destinations/',function(req, res){
+  models.Destination.find({}).exec(function(error, results){
+    if (error) {
+        res.json({ error: error });
+      } else {
+        res.json(results);
+      }
+  });
 });
 
 app.listen(settings.port);

@@ -8,8 +8,10 @@ var HotelSchema   = new mongoose.Schema({
   address: String,
   phone: String,
   email: String,
-  web: String
+  web: String,
+  _destination : { type: mongoose.Schema.Types.ObjectId, ref: 'Destination' },
 });
+
 
 // Export the Mongoose model
 module.exports = mongoose.model('Hotel', HotelSchema);
