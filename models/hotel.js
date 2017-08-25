@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 // Define our beer schema
 var HotelSchema   = new mongoose.Schema({
   name: String,
-  type: String,
+  category: String,
   address: String,
   phone: String,
   email: String,

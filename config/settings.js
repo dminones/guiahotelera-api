@@ -11,7 +11,7 @@ try {
 }
 
 var settings = {
-	  port : process.env.PORT || 3000,
+	  port : process.env.PORT || 9000,
 	  mongodb : {
 	    url : process.env.MONGODB_URL || 'localhost',
 	    name: process.env.MONGODB_DBNAME || 'hotelguia',
