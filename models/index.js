@@ -15,7 +15,7 @@ mongoose.connect(connectionString);
 
 var db        = {};
 
-/*
+
 fs
   .readdirSync(__dirname)
   .filter(function(file) {
@@ -25,11 +25,6 @@ fs
     var model = reload(path.join(__dirname, file));
     db[model.modelName] = model;
   });
-*/
-
-db['Category'] = require('./category');
-db['Destination'] = require('./destination');
-db['Item'] = require('./item');
 
 db.mongoose = mongoose;
 
