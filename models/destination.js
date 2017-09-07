@@ -1,12 +1,14 @@
 // Load required packages
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
+, Schema = mongoose.Schema;
 
 // Define our beer schema
-var DestinationSchema   = new mongoose.Schema({
+var DestinationSchema   = new Schema({
   	name: String,
   	description: String,
   	image: String,
-	parent : { type: mongoose.Schema.Types.ObjectId, ref: 'Destination' },
+  	slug: String,
+	parent : { type: Schema.ObjectId, ref: 'Destination' },
 });
 
 // Export the Mongoose model

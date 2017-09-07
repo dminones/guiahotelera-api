@@ -82,20 +82,14 @@ app.get('/', function(req, res) {
 	res.json({ message: 'Hello World!!' });
 });
 
-app.get('/hotel/:name', function(req, res) {
-  	var hotel = new models.Hotel({ name: req.params.name });
-	hotel.save(function (err) {
-	  if (err) {
-	  	res.json({ error: err });
-	  } else {
-	  	res.json(hotel);
-	  }
-	});
-});
-
-app.get('/hotels/',function(req, res){
+app.get('/item/',function(req, res){
   var response;
-	models.Hotel.find({}).populate('_destination').exec(function(error, results){
+  var query = req.query;
+  if( query.name )
+    query.name = new RegExp(query.name, "i");
+
+  console.log(query)
+  models.Item.find(query).populate(['_destination', '_category']).exec(function(error, results){
 		if (error) {
 		  	response = { error: error };
 		  } else {
@@ -105,8 +99,9 @@ app.get('/hotels/',function(req, res){
 	});
 });
 
-app.get('/destinations/',function(req, res){
-  models.Destination.find({}).exec(function(error, results){
+
+app.get('/destination/',function(req, res){
+  models.Destination.find(req.query).exec(function(error, results){
     if (error) {
         res.json({ error: error });
       } else {
@@ -114,5 +109,26 @@ app.get('/destinations/',function(req, res){
       }
   });
 });
+
+
+app.get('/item-category/',function(req, res){
+
+  models.Item.find(req.query)
+              .populate('_category')
+              .distinct('_category', null, function (err, result) {
+
+    if (err) return handleError(err);
+    models.Category.find({_id:result}).exec(function(error, results){
+      if (error) return handleError(error);
+      if (error) {
+        res.json({ error: error });
+      } else {
+        res.json(results);
+      }
+    });
+  })
+});
+
+
 
 app.listen(settings.port);
