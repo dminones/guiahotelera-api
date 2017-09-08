@@ -66,10 +66,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.put('/forest/destinations/:destionationId', liana.ensureAuthenticated, function(){
-  console.log("holas");
-});
-
 // Setup the Forest Liana middleware in your app.js file
 app.use(require('forest-express-mongoose').init({
   modelsDir: __dirname + '/models', // Your models directory.
@@ -79,7 +75,7 @@ app.use(require('forest-express-mongoose').init({
 }));
 
 app.get('/', function(req, res) {
-	res.json({ message: 'Hello World!!' });
+	res.json({ message: 'Hello World!' });
 });
 
 app.get('/item/',function(req, res){
@@ -88,8 +84,9 @@ app.get('/item/',function(req, res){
   if( query.name )
     query.name = new RegExp(query.name, "i");
 
-  console.log(query)
-  models.Item.find(query).populate(['_destination', '_category']).exec(function(error, results){
+  models.Item.find(query)
+            .populate(['_destination', '_accommodationType'])
+            .exec(function(error, results){
 		if (error) {
 		  	response = { error: error };
 		  } else {
@@ -111,14 +108,14 @@ app.get('/destination/',function(req, res){
 });
 
 
-app.get('/item-category/',function(req, res){
+app.get('/item-accommodationtype/',function(req, res){
 
   models.Item.find(req.query)
-              .populate('_category')
-              .distinct('_category', null, function (err, result) {
+              .populate('_accommodationType')
+              .distinct('_accommodationType', null, function (err, result) {
 
     if (err) return handleError(err);
-    models.Category.find({_id:result}).exec(function(error, results){
+    models.AccommodationType.find({_id:result}).exec(function(error, results){
       if (error) return handleError(error);
       if (error) {
         res.json({ error: error });
@@ -128,6 +125,20 @@ app.get('/item-category/',function(req, res){
     });
   })
 });
+
+app.get('/random-destination-image/',function(req,res){
+  models.Destination.count({ image: { $ne: null } }).exec(function (err, count) {
+    // Get a random entry and redirect
+    var random = Math.floor(Math.random() * count)
+    models.Destination.findOne({ image: { $ne: null } }).skip(random).exec(
+      function (err, result) {
+        res.writeHead(302, {
+          'Location': result.image
+        });
+        res.end();
+    })
+  })
+})
 
 
 

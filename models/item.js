@@ -11,10 +11,11 @@ var ItemSchema   = new Schema({
   web: String,
   thumbnail: String,
   overview: String,
-  location: Object,
-  publicationType: ['NEW', 'STATUS'],
+  location: String,
+  publicationType: String,
   _destination : { type: Schema.ObjectId, ref: 'Destination' },
-  _category : { type: Schema.ObjectId, ref: 'Category' },
+  _accommodationType : { type: Schema.ObjectId, ref: 'AccommodationType' },
+  category : String,
 });
 
 

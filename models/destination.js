@@ -8,7 +8,7 @@ var DestinationSchema   = new Schema({
   	description: String,
   	image: String,
   	slug: String,
-	parent : { type: Schema.ObjectId, ref: 'Destination' },
+  	_parent : { type: Schema.ObjectId, ref: 'Destination' },
 });
 
 // Export the Mongoose model
