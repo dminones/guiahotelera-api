@@ -84,13 +84,31 @@ app.get('/item/',function(req, res){
   if( query.name )
     query.name = new RegExp(query.name, "i");
 
-  models.Item.find(query)
+  let orderByAccomodationType = function(a,b) {
+    const aOrder = a._accommodationType ? a._accommodationType.order : Number.MAX_SAFE_INTEGER;
+    const bOrder = b._accommodationType ? b._accommodationType.order : Number.MAX_SAFE_INTEGER;
+    
+    if (aOrder < bOrder) {
+      return -1;
+    }
+    if (bOrder < aOrder) {
+      return 1;
+    }
+    // a must be equal to b
+    return 0;
+  };
+
+  models.Item.find(query, null, {
+                sort:{
+                    publicationType: -1 //Sort by Date Added DESC
+                }
+            })
             .populate(['_destination', '_accommodationType'])
             .exec(function(error, results){
 		if (error) {
 		  	response = { error: error };
 		  } else {
-		  	response = results;
+		  	response = results.sort(orderByAccomodationType);
 		  }
     res.json(response);
 	});
