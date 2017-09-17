@@ -98,17 +98,40 @@ app.get('/item/',function(req, res){
     return 0;
   };
 
-  models.Item.find(query, null, {
-                sort:{
-                    publicationType: -1 //Sort by Date Added DESC
-                }
-            })
+  let orderByPublicationType = function(a,b) {
+    let publicationTypes = {
+      "Basica": 1,
+      "Premium": 2
+    };
+
+    const aPublicationOrder = publicationTypes[a.publicationType]? publicationTypes[a.publicationType] : 0;
+    const bPublicationOrder = publicationTypes[b.publicationType]? publicationTypes[b.publicationType] : 0;
+
+    if (aPublicationOrder > bPublicationOrder) {
+      return -1;
+    }
+    if (aPublicationOrder < bPublicationOrder) {
+      return 1;
+    }
+    // a must be equal to b
+    return 0;
+  };
+
+  let orderByAll = function(a,b) {
+    if (orderByPublicationType(a,b) == 0) {
+      return orderByAccomodationType(a,b)
+    }
+
+    return orderByPublicationType(a,b)
+  }
+
+  models.Item.find(query)
             .populate(['_destination', '_accommodationType'])
             .exec(function(error, results){
 		if (error) {
 		  	response = { error: error };
 		  } else {
-		  	response = results.sort(orderByAccomodationType);
+		  	response = results.sort(orderByAll);
 		  }
     res.json(response);
 	});
