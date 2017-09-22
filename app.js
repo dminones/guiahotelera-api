@@ -181,6 +181,13 @@ app.get('/random-destination-image/',function(req,res){
   })
 })
 
+app.post('/book/',function(req, res){
+  console.log(req.body)
+  res.json({
+    response: "Mensaje enviado con exito"
+  })
+});
+
 
 
 app.listen(settings.port);
