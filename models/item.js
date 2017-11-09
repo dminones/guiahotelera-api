@@ -13,6 +13,7 @@ var ItemSchema   = new Schema({
   twitter: String,
   instagram: String,
   thumbnail: String,
+  logoImage: String,
   overview: String,
   location: String,
   publicationType: String,

@@ -1,7 +1,7 @@
 module.exports = {
   mongodb : {
     url : 'localhost',
-    name: 'hotelguia',
+    name: 'mongoose',
     port: '27017'
   }
 };

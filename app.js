@@ -100,8 +100,9 @@ app.get('/item/',function(req, res){
 
   let orderByPublicationType = function(a,b) {
     let publicationTypes = {
-      "Basica": 1,
-      "Premium": 2
+      "Figuracion": 1,
+      "Basica": 2,
+      "Premium": 3,
     };
 
     const aPublicationOrder = publicationTypes[a.publicationType]? publicationTypes[a.publicationType] : 0;
@@ -117,12 +118,27 @@ app.get('/item/',function(req, res){
     return 0;
   };
 
-  let orderByAll = function(a,b) {
-    if (orderByPublicationType(a,b) == 0) {
-      return orderByAccomodationType(a,b)
-    }
+  let orderByName = function(a,b) {
+    if ( a.name < b.name)
+      return -1
+    if ( a.name > b.name)
+      return 1
+    return 0
+  };
 
-    return orderByPublicationType(a,b)
+  let orderByAll = function(a,b) {
+    let orders = [
+      orderByPublicationType,
+      orderByAccomodationType,
+      orderByName
+    ]
+
+    var i = 0
+    while(i < orders.length && orders[i](a,b) == 0 ) {
+      i++
+    }
+    let index = (i < orders.length) ? i : orders.length-1
+    return orders[index](a,b)
   }
 
   models.Item.find(query)
