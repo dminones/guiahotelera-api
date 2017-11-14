@@ -182,9 +182,11 @@ app.get('/destination/',function(req, res){
 
 
 app.get('/banner/',function(req, res){
-  var query = { ...req.query, 
-                _destination: (req.query._destination !== 'null') ? req.query._destination : { $ne: null } 
-              }
+  var query = { ...req.query }
+  if(query._destination) {
+    query._destination = (req.query._destination === 'null') ? null : query._destination
+  }
+  console.log(query)
   models.Banner.find(query).sort('order').exec(returnResults(res));
 });
 
