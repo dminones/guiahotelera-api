@@ -17,6 +17,7 @@ var db = {};
 db['AccommodationType'] = require('./accommodation_type');
 db['Destination'] = require('./destination');
 db['Item'] = require('./item');
+db['Banner'] = require('./banner');
 
 db.mongoose = mongoose;
 

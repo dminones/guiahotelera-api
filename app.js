@@ -166,16 +166,27 @@ app.get('/item/',function(req, res){
 });
 
 
-app.get('/destination/',function(req, res){
-  models.Destination.find(req.query).exec(function(error, results){
+const returnResults = (res) => {
+  return (error, results) => {
     if (error) {
-        res.json({ error: error });
-      } else {
-        res.json(results);
-      }
-  });
+      res.json({ error: error });
+    } else {
+      res.json(results);
+    }
+  }
+}
+
+app.get('/destination/',function(req, res){
+  models.Destination.find(req.query).exec(returnResults(res));
 });
 
+
+app.get('/banner/',function(req, res){
+  var query = { ...req.query, 
+                _destination: (req.query._destination !== 'null') ? req.query._destination : { $ne: null } 
+              }
+  models.Banner.find(query).sort('order').exec(returnResults(res));
+});
 
 app.get('/item-accommodationtype/',function(req, res){
 
