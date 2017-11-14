@@ -16,6 +16,7 @@
     "express": "^4.15.2",
     "forest-express-mongoose": "^1.4.9",
     "mongoose": "^4.9.7",
+    "nodemailer": "^4.4.0",
     "require-reload": "^0.2.2",
     "underscore": "^1.8.3"
   }

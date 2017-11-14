@@ -4,6 +4,18 @@ var settings = require('./config/settings');
 var models = require('./models');
 var AWS = require('aws-sdk');
 var liana = require('forest-express-mongoose');
+const nodemailer = require('nodemailer');
+
+let smtpConfig = {
+    host: 'cr1.toservers.com',
+    port: 465,
+    secure: true, // upgrade later with STARTTLS
+    auth: {
+        user: 'consultas@guiahotelerabolivia.com',
+        pass: 'ruben4910'
+    }
+};
+let transporter = nodemailer.createTransport(smtpConfig)
 
 function randomFilename() {
   return require('crypto').randomBytes(48, function(err, buffer) {
@@ -198,9 +210,31 @@ app.get('/random-destination-image/',function(req,res){
 })
 
 app.post('/book/',function(req, res){
-  console.log(req.body)
-  res.json({
-    response: "Mensaje enviado con exito"
+  const formData = req.body
+  var message = {
+      from: 'consultas@guiahotelerabolivia.com',
+      to: formData.to,
+      subject: 'Consulta de Guia Hotelera Bolivia',
+      text: `
+        Ha recibido la siguiente consulta de Guia Hotelera Bolivia
+        www.guiahotelerabolivia.com
+        --------------------------------------------------------
+        Nombre: ${formData.name}
+        Email:  ${formData.email}
+        Asunto:  ${formData.subject}
+        Consulta:  ${formData.message}
+      `,
+  }
+  transporter.sendMail(message, (error) => {
+    if(error) {
+      res.json({
+        error: "No pudo enviarse el mensaje. Por favor intente más tarde"
+      })
+    } else {
+      res.json({
+        response: "Mensaje enviado con exito"
+      })
+    }
   })
 });
 
