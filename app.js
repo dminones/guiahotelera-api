@@ -181,10 +181,14 @@ app.get('/destination/',function(req, res){
 });
 
 
+app.get('/destination/:destination_id/category/',function(req, res){
+  models.Item.find({_destination: req.params.destination_id}).distinct('category', null, returnResults(res))
+});
+
 app.get('/banner/',function(req, res){
   var query = { ...req.query }
   if(query._destination) {
-    query._destination = (req.query._destination === 'null') ? null : query._destination
+    query._destination = (req.query._destination === 'null') ? { $e: null } : query._destination
   }
   console.log(query)
   models.Banner.find(query).sort('order').exec(returnResults(res));
