@@ -188,28 +188,27 @@ app.get('/destination/:destination_id/category/',function(req, res){
 app.get('/banner/',function(req, res){
   var query = { ...req.query }
   if(query._destination) {
-    query._destination = (req.query._destination === 'null') ? { $e: null } : query._destination
+    query._destination = (req.query._destination === 'null') ? null : query._destination
   }
-  console.log(query)
   models.Banner.find(query).sort('order').exec(returnResults(res));
 });
 
 app.get('/item-accommodationtype/',function(req, res){
-
+  console.log(req.query)
   models.Item.find(req.query)
               .populate('_accommodationType')
               .distinct('_accommodationType', null, function (err, result) {
-
-    if (err) return handleError(err);
-    models.AccommodationType.find({_id:result}).exec(function(error, results){
-      if (error) return handleError(error);
-      if (error) {
-        res.json({ error: error });
-      } else {
-        res.json(results);
-      }
-    });
-  })
+                console.log(result)
+                if (err) return handleError(err);
+                models.AccommodationType.find({_id:result}).exec(function(error, results){
+                  if (error) return handleError(error);
+                  if (error) {
+                    res.json({ error: error });
+                  } else {
+                    res.json(results);
+                  }
+                });
+            })
 });
 
 app.get('/random-destination-image/',function(req,res){
