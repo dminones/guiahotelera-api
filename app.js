@@ -181,8 +181,8 @@ app.get('/destination/',function(req, res){
 });
 
 
-app.get('/destination/:destination_id/category/',function(req, res){
-  models.Item.find({_destination: req.params.destination_id}).distinct('category', null, returnResults(res))
+app.get('/category/',function(req, res){
+  models.Item.find(req.query).distinct('category', null, returnResults(res))
 });
 
 app.get('/banner/',function(req, res){
