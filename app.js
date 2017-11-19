@@ -177,9 +177,46 @@ const returnResults = (res) => {
 }
 
 app.get('/destination/',function(req, res){
-  models.Destination.find(req.query).exec(returnResults(res));
-});
+  var query = { ...req.query }
+  const onlyOrdered = (query.onlyOrdered=='1')
+  delete query.onlyOrdered
 
+  var queries =[]
+
+  var queryOrdered = {...query}
+  queryOrdered.order = { $ne: null }
+  queries.push(queryOrdered)
+
+  if(!onlyOrdered) {
+    var queryOrderNull = {...query}
+    queryOrderNull.order = null
+    queries.push(queryOrderNull)
+  }
+  
+  var promises = queries.map((query) => {
+    return new Promise((resolve, reject) => {
+      models.Destination.find(query).sort('order').exec((error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    }) 
+  })
+
+  Promise.all(promises).then(values => { 
+    var results = values[0]
+    if(values.length > 1) {
+      results = values[0].concat(values[1])
+    }
+    
+    res.json(results);
+  }, error => {
+    res.json(error);
+  });
+  
+});
 
 app.get('/category/',function(req, res){
   models.Item.find(req.query).distinct('category', null, returnResults(res))
